@@ -1,4 +1,17 @@
 test("GET to /api/v1/status should return 200", async () => {
   const response = await fetch("http://localhost:3000/api/v1/status");
   expect(response.status).toBe(200);
+
+  const responseBody = await response.json();
+
+  // Verify updated_at
+  const parsedUpdateAt = new Date(responseBody.updated_at).toISOString();
+  expect(responseBody.updated_at).toEqual(parsedUpdateAt);
+
+  // Verify database status
+  expect(responseBody.dependecies.database.version).toBe("16.0");
+  expect(responseBody.dependecies.database.max_connections).toBe(100);
+  expect(responseBody.dependecies.database.active_connections).toBe(1);
+
+  // Check if the number of connections is bigger then active connections
 });
